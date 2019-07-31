@@ -1,11 +1,13 @@
+//intialize the blockchain 
 function Blockchain(){
-    this.chain =[];
+    this.chain =[]; //current chain
     this.pendingTransactions = [];
 
 }
 
-
+//adding a creanewblock prototype to the blockchain function, creates a new block then clear the pending transactions and push the new block in the chain
 Blockchain.prototype.createNewBlock = function(nonce, previousBlockHash, hash){
+    //newblock object
     const newBlock = {
         index: this.chain.length +1,
         timestamp: Date.now(),
@@ -20,15 +22,17 @@ Blockchain.prototype.createNewBlock = function(nonce, previousBlockHash, hash){
     this.pendingTransactions = [];
     this.chain.push(newBlock);
 
+    //return new block object
     return newBlock;
 }
 
 
+//attach getlastblock prototype function
 Blockchain.prototype.getLastBlock = function(){
     return this.chain[this.chain.length - 1];
 }
 
-//create new transaction
+//create new transaction object, then push to pending transactions
 Blockchain.prototype.createNewTransaction = function(amount, sender, recipient){
     const newTransaction ={
         amount: amount,
