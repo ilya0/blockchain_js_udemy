@@ -49,14 +49,24 @@ Blockchain.prototype.createNewTransaction = function(amount, sender, recipient){
 };
 
 
-//sha256 hashing function
+//sha256 hashing function - confirms the validity of the hash
 Blockchain.prototype.hashBlock = function(previousBlockHash, currentBlockData, nonce){
     const dataAsString = previousBlockHash + nonce.toString() + JSON.stringify(currentBlockData);
     const hash = sha256(dataAsString);
     return hash;
 };
 
+
+// a proof of work is - creating the nonce and finding the correct block hash 
 Blockchain.prototype.proofOfWork = function(previousBlockHash,currentBlockData){
+let nonce = 0;
+let hash = this.hashBlock(previousBlockHash, currentBlockData, nonce);
+while (hash.substring(0,4) !== '0000'){
+    nonce++;
+    hash = this.hashBlock(previousBlockHash, currentBlockData, nonce);
+    console.log(hash);
+}
+return nonce;
 
 };
 

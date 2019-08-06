@@ -1,10 +1,16 @@
-//require the blockchain script
+/// ******Required for all blockchain tests ******
 const Blockchain = require('./blockchain');
 const bitcoin = new Blockchain()
 
 
 
-const previousBlockHash = 'test'; //randome string that acts as block hash
+
+
+
+// ***************Testing section********************
+
+
+const previousBlockHash = 'randomblockhash'; //randome string that acts as block hash
 const currentBlockData = [
     {
         amount:10,
@@ -23,9 +29,12 @@ const currentBlockData = [
     }
 ]
 
-const nonce = 100;
 
-console.log(bitcoin.hashBlock(previousBlockHash, currentBlockData, nonce));
+console.log( bitcoin.proofOfWork(previousBlockHash,currentBlockData) );
+
+console.log(bitcoin.hashBlock(previousBlockHash,currentBlockData, 185727))
+
+//console.log(bitcoin.hashBlock(previousBlockHash, currentBlockData, nonce));
 
 // //create a "bitcoin" blockchain instance
 
