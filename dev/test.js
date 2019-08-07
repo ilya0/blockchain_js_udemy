@@ -7,6 +7,7 @@ const bitcoin = new Blockchain()
 
 
 
+
 // ***************Testing section********************
 
 
@@ -30,9 +31,15 @@ const currentBlockData = [
 ]
 
 
-console.log( bitcoin.proofOfWork(previousBlockHash,currentBlockData) );
 
-console.log(bitcoin.hashBlock(previousBlockHash,currentBlockData, 185727))
+
+
+
+
+ console.log( bitcoin.proofOfWork(previousBlockHash,currentBlockData) );
+
+// // trying out the hash with the info provided
+// console.log(bitcoin.hashBlock(previousBlockHash,currentBlockData, 185727))
 
 //console.log(bitcoin.hashBlock(previousBlockHash, currentBlockData, nonce));
 
