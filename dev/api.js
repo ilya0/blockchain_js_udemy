@@ -1,5 +1,12 @@
 var express = require('express')
 var app = express();
+const bodyParser = require('body-parser');
+const Blockchain = require('./blockchain');
+
+const bitcoin = new Blockchain();
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: false}));
 
 console.log("server running")
 
@@ -17,7 +24,8 @@ app.get('/blockchain', function(req,res){
 
 
 app.post('/transaction', function(req,res){
-    res.send('post transactions')
+    console.log(req.body);
+    res.send('The amount of the transactions is ', req.body.amount )
     
 });
 
