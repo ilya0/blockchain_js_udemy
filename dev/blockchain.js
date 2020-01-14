@@ -1,17 +1,17 @@
+//used to encrypt the chain
 const sha256 = require('sha256');
 
-//intialize the blockchain 
+//intialize the  whole blockchain 
 function Blockchain(){
     this.chain =[]; //current chain
     this.pendingTransactions = [];
     this.createNewBlock(100,'genesis','genesis'); // genesis block
 
-
 }
 
-//adding a creanewblock prototype to the blockchain function, creates a new block then clear the pending transactions and push the new block in the chain
+//adding a  prototype to the blockchain function, creates a new block then clear the pending transactions and push the new block in the chain
 Blockchain.prototype.createNewBlock = function(nonce, previousBlockHash, hash){
-    //newblock object
+    //new block object
     const newBlock = {
         index: this.chain.length +1,
         timestamp: Date.now(),
@@ -19,7 +19,6 @@ Blockchain.prototype.createNewBlock = function(nonce, previousBlockHash, hash){
         nonce: nonce, // come from proof of work that the block was created with a work algorythm any number 
         hash: hash, // data from new block
         previousBlockHash: previousBlockHash
-
 
     };
 

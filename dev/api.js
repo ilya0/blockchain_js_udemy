@@ -1,9 +1,11 @@
 var express = require('express')
 var app = express();
 const bodyParser = require('body-parser');
-const Blockchain = require('./blockchain');
+const Blockchain = require('./blockchain'); //importing blockchain data structure constructor function
+const uuid = require('uuid/v1');
+const nodeAddress = uuid().split("-").join('');
 
-const bitcoin = new Blockchain();
+const bitcoin = new Blockchain(); // new blockchain instance
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
@@ -17,21 +19,42 @@ app.get('/', function(req,res){
 
 
 app.get('/blockchain', function(req,res){
-    res.send('show all of the blockchain')
+    res.send(bitcoin)
     
 });
 
 
 
 app.post('/transaction', function(req,res){
+    const blockIndex = bitcoin.createNewTransaction(req.body.amount, req.body.sender)
+    res.json({note:`Transaction will be added ${blockIndex}.`})
     console.log(req.body);
-    res.send('The amount of the transactions is ', req.body.amount )
+    //res.send('The amount of the transactions is ' ${req.body.amount} )
     
 });
 
 
 app.get('/mine', function(req,res){
-    res.send('mine new block')
+    const lastBlock = bitcoin.getLastBlock();
+
+    const previousBlockHash = lastBlock['hash'];
+
+    const currentBlockData = {
+        transactions: bitcoin.pendingTransactions,
+        index: lastBlock['index'] + 1
+    };
+    const nonce = bitcoin.proofOfWork(previousBlockHash,currentBlockData);
+
+    const blockHash = bitcoin.hashBlock(previousBlockHash,currentBlockData,nonce);
+
+    bitcoin.createNewTransaction(12.5,"mineraddress", nodeAddress);
+
+    const newBlock = bitcoin.createNewBlock(nonce, previousBlockHash, currentBlockData);
+
+    res.json({
+        note: "New block mined successfully",
+        block: newBlock
+    });
     
 });
 
