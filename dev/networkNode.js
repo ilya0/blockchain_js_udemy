@@ -3,6 +3,9 @@ var app = express();
 const bodyParser = require('body-parser');
 const Blockchain = require('./blockchain'); //importing blockchain data structure constructor function
 const uuid = require('uuid/v1');
+
+const port = process.argv[2];
+
 const nodeAddress = uuid().split("-").join('');
 
 const bitcoin = new Blockchain(); // new blockchain instance
@@ -63,7 +66,30 @@ app.get('/mine', function(req,res){
 });
 
 
+// register a node and broadcast it on the network
+app.post('/register-and-broadcast-node', function(req,res){
+    const newNodeUrl = req.body.newNodeUrl;
+    if(bitcoin.networkNodes.indexOf(newNodeUrl) == -1){
+        bitcoin.networkNodes.push(newNodeUrl)
+    } 
+    bitcoin.networkNodes.forEach(networkNodeUrl =>{
+        // 'regiser-node'
+        
+    })
 
-app.listen(3000, function(){
-    console.log('listening on port 3000')
+});
+
+// register a node with the network
+app.post('/register-node', function(req,res){
+
+});
+
+//register nodes all at once
+app.post('/egister-nodes-bulk',function(req,res){
+
+});
+
+
+app.listen(port, function(){
+    console.log(`listening on port ${port}....`)
 });
