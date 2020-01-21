@@ -68,13 +68,14 @@ app.get('/mine', function(req,res){
 
 // register a node and broadcast it on the network
 app.post('/register-and-broadcast-node', function(req,res){
-    const newNodeUrl = req.body.newNodeUrl;
+
+    const newNodeUrl = req.body.newNodeUrl; // this is the new node url incoming
     if(bitcoin.networkNodes.indexOf(newNodeUrl) == -1){
         bitcoin.networkNodes.push(newNodeUrl)
     } 
     bitcoin.networkNodes.forEach(networkNodeUrl =>{
         // 'regiser-node'
-        
+
     })
 
 });
