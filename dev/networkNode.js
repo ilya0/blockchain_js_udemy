@@ -3,12 +3,12 @@ var app = express();
 const bodyParser = require('body-parser');
 const Blockchain = require('./blockchain'); //importing blockchain data structure constructor function
 const uuid = require('uuid/v1');
-
 const port = process.argv[2];
-
+const rp = require("request-promise");
 const nodeAddress = uuid().split("-").join('');
 
 const bitcoin = new Blockchain(); // new blockchain instance
+
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
@@ -70,23 +70,55 @@ app.get('/mine', function(req,res){
 app.post('/register-and-broadcast-node', function(req,res){
 
     const newNodeUrl = req.body.newNodeUrl; // this is the new node url incoming
+
+    //if the bitcoin url doesnt exist then push it into the array
     if(bitcoin.networkNodes.indexOf(newNodeUrl) == -1){
         bitcoin.networkNodes.push(newNodeUrl)
     } 
-    bitcoin.networkNodes.forEach(networkNodeUrl =>{
-        // 'regiser-node'
 
+
+
+    const regNodesPromises = [];
+    bitcoin.networkNodes.forEach(networkNodeUrl =>{
+
+        // 'register-node'
+        const requestOptions = {
+            uri: networkNodeUrl + '/register-node',
+            method: 'POST',
+            body: {newNodeUrl: newNodeUrl},
+            json: true
+        };
+        regNodesPromises.push(rp(requestOptions));
+
+    });
+    Promise.all(regNodesPromises)
+    .then(data =>{
+       const bulkRegisterOptions = {
+           url: newNodeUrl + '/register-nodes-bulk',
+           method: 'POST',
+           body:{ allNetworkNodes: [...bitcoin.networkNodes, bitcoin.currentnode.url]},
+           json: true
+       };
+       return rp(bulkRegisterOptions);
+    })
+    .then(data =>{
+        res.json({note:"registered sucessesfully"});
     })
 
 });
 
 // register a node with the network
 app.post('/register-node', function(req,res){
+const newNodeUrl = req.body.newNodeUrl; //get node url
+const nodeNotAlreadyPresent = bitcoin.networkNodes.indexOf(newNodeUrl) == -1; // if -1 then node is not already present
+const notCurrentNode = bitcoin.currentNodeUrl !== newNodeUrl; // 
 
+ if(nodeNotAlreadyPresent) bitcoin.networkNodes.push(newNodeUrl)
+ res.json({ note: ' New node registered successfully with node. '})
 });
 
 //register nodes all at once
-app.post('/egister-nodes-bulk',function(req,res){
+app.post('/register-nodes-bulk',function(req,res){
 
 });
 
