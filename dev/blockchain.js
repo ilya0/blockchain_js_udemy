@@ -1,11 +1,13 @@
-//used to encrypt the chain
-const sha256 = require('sha256');
+const sha256 = require('sha256'); //chain encryption
+const currentNodeUrl = process.argv[3];
 
-//intialize the  whole blockchain 
-function Blockchain(){
+
+function Blockchain(){//intialize the  whole blockchain 
     this.chain =[]; //current chain
     this.pendingTransactions = [];
+    this.currentNodeUrl = currentNodeUrl;
     this.createNewBlock(100,'genesis','genesis'); // genesis block
+    this.networkNodes = []
 
 }
 
