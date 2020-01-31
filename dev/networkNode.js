@@ -113,7 +113,7 @@ app.post('/register-node', function(req,res){
 const newNodeUrl = req.body.newNodeUrl; //get node url from the body
 console.log("new node url is ", newNodeUrl);
 console.log("nodes are ", bitcoin.networkNodes);
-console.log("indexof", indexOf(newNodeUrl))
+
 const nodeNotAlreadyPresent = bitcoin.networkNodes.indexOf(newNodeUrl) == -1; // if -1 then node is not already present true=present false=needs to be pushed into 
 const notCurrentNode = bitcoin.currentNodeUrl !== newNodeUrl; //evaluate  expression  true if current is not the new node url
 
