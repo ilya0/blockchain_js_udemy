@@ -5,9 +5,7 @@ const Blockchain = require('./blockchain');
 const uuid = require('uuid/v1');
 const port = process.argv[2];
 const rp = require("request-promise");
-
 const nodeAddress = uuid().split("-").join('');
-
 const bitcoin = new Blockchain(); // new blockchain instance
 
 
@@ -31,12 +29,44 @@ app.get('/blockchain', function(req,res){
 
 // ** add a transactions **
 app.post('/transaction', function(req,res){
-    const blockIndex = bitcoin.createNewTransaction(req.body.amount, req.body.sender)
-    res.json({note:`Transaction will be added ${blockIndex}.`})
-    console.log(req.body);
-    //res.send('The amount of the transactions is ' ${req.body.amount} )
+   const newTransaction = req.body;
+   const blockIndex = bitcoin.addTransactionToPendingTransactions(newTransaction);
+   res.json({ note: `Transactions will be added in block ${blockIndex}` })
+
 });
 
+//**broadcast transactions to all the nodes */
+app.post('/transaction/broadcast', function(req,res){
+   
+    const newTransaction = bitcoin.createNewTransaction(req.body.amount,req.body.sender, req.body.recipient);
+    bitcoin.addTransactionToPendingTransactions(newTransaction);
+    console.log("newTransaction is", newTransaction);
+    const requestPromises = []; // promise array to send all the transactiosn to nodes
+    console.log("transaction broadcast hit")
+    console.log("bitcoin.networknodes ", bitcoin.networkNodes)
+
+
+    //broad cast transaction to all the nodes 
+    bitcoin.networkNodes.forEach(networkNodeUrl =>{
+        console.log("for each in trans broad hit");
+        console.log("networknode url is ", networkNodeUrl);
+        
+
+        const requestOptions = {
+            uri: networkNodeUrl + '/transaction',
+            method: 'POST',
+            body: newTransaction,
+            json: true
+        };
+      
+        requestPromises.push(rp(requestOptions));
+    
+    });
+
+    Promise.all(requestPromises).then(data => {
+        res.json({note: 'transactions created and broadcast confirmed'});
+    });
+});
 
 //  ** mining a transaction **
 app.get('/mine', function(req,res){
