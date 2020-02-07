@@ -94,7 +94,6 @@ app.post('/receive-new-block', function(req,res){
 });
 
 
-
 //  ** mining a transaction **
 app.get('/mine', function(req,res){
     const lastBlock = bitcoin.getLastBlock();
@@ -188,6 +187,7 @@ app.post('/register-and-broadcast-node', function(req,res){
 
 });
 
+
 // register a node with another node
 app.post('/register-node', function(req,res){
 
@@ -204,10 +204,6 @@ const notCurrentNode = bitcoin.currentNodeUrl !== newNodeUrl; //evaluate  expres
 });
 
 
-
-
-
-
 //take the allneworknodes list and add nodes on there
 app.post('/register-nodes-bulk',function(req,res){
     const allNetworkNodes = req.body.allNetworkNodes;
@@ -222,6 +218,53 @@ app.post('/register-nodes-bulk',function(req,res){
     res.json({note: 'Bulk Reg successful.'});
 
 });
+
+
+//goes through and finds the longest blockchain
+app.get('/consensus', function(req,res){
+    const requestPromises =[];
+
+    bitcoin.networkNodes.forEach(networkNodeUrl => {
+
+    const requestOptions = {
+        uri: networkNodeUrl + '/blockchain',
+        method: "GET",
+        json: true
+    };
+
+    requestPromises.push(rp(requestOptions))
+    .then(blockchains =>{
+        const currentChainLength = bitcoin.chain.length;
+        let maxChainLength = currentChainLength;
+        let newLongestChain = null;
+        let newPendingTransactions = null;
+
+        blockchains.forEach(blockchain =>{
+            if(blockchain.chain.length > maxChainLength){
+                maxChainLength = blockchain.chain.length
+                newLongestChain = blockchain.chain;
+                newPendingTransactions = blockchain.pendingTransactions;
+            }
+
+        });
+
+        if(!newLongestChain || (newLongestChain && !bitcoin.chainIsValid(newLongestChain))){
+            res.json({
+                note: 'Current chain has not be replaced.',
+                chain: bitcoin.chain
+            });
+        } else if( newLongestChain && bitcoin.chainIsValid(newLongestChain)){
+            bitcoin.chain = newLongestChain;
+            bitcoin.pendingTransactions = newPendingTransactions
+            res.json({
+                note: ' This chain has been replaced',
+                chain : bitcoin.chain
+            });
+        }
+    })
+    });
+});
+
 
 
 app.listen(port, function(){
