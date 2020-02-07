@@ -2,55 +2,28 @@
 const Blockchain = require('./blockchain');
 const bitcoin = new Blockchain()
 
+const bc1 =
+{
+    "chain": [
+      {
+        "index": 1,
+        "timestamp": 1581097906830,
+        "transactions": [
+          
+        ],
+        "nonce": 100,
+        "hash": "0",
+        "previousBlockHash": "0"
+      }
+    ],
+    "pendingTransactions": [
+      
+    ],
+    "currentNodeUrl": "http://localhost:3001",
+    "networkNodes": [
+      
+    ]
+  }
 
-
-
-
-
-
-// ***************Testing section********************
-
-
-const previousBlockHash = 'randomblockhash'; //randome string that acts as block hash
-const currentBlockData = [
-    {
-        amount:10,
-        sender: 'sender1',
-        recipient:'recipient1'
-    },
-    {
-        amount:20,
-        sender: 'sender2',
-        recipient:'recipient2'
-    },
-    {
-        amount:30,
-        sender: 'sender3',
-        recipient:'recipient3'
-    }
-]
-
-
-
-
-
-
-
- console.log( bitcoin.proofOfWork(previousBlockHash,currentBlockData) );
-
-// // trying out the hash with the info provided
-// console.log(bitcoin.hashBlock(previousBlockHash,currentBlockData, 185727))
-
-//console.log(bitcoin.hashBlock(previousBlockHash, currentBlockData, nonce));
-
-// //create a "bitcoin" blockchain instance
-
-// //run create new block method on bitcoin object, push into block
-// bitcoin.createNewBlock(2389,'newblock1', 'hash1');
-
-// bitcoin.createNewTransaction(100,'addressSender123', 'addressRecipent123');
-
-// bitcoin.createNewBlock(111,'KJJtestKDJF', 'test');
-
-// // console.log(bitcoin.chain[1]);
+console.log('Valid', bitcoin.chainIsValid(bc1.chain));
 
