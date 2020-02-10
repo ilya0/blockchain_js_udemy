@@ -232,7 +232,9 @@ app.get('/consensus', function(req,res){
         json: true
     };
 
-    requestPromises.push(rp(requestOptions))
+    requestPromises.push(rp(requestOptions));
+
+Promise.all(requestPromises)
     .then(blockchains =>{
         const currentChainLength = bitcoin.chain.length;
         let maxChainLength = currentChainLength;
@@ -265,6 +267,36 @@ app.get('/consensus', function(req,res){
     });
 });
 
+
+
+app.get('/block/:blockHash', function(req,res){  //localhost:3001/block/asdfasf1234
+    console.log("blockhash is", req.params);
+
+    const blockHash = req.params.blockHash;
+    const correctBlock = bitcoin.getBlock(blockHash);
+
+    res.json({
+        block: correctBlock
+    });
+});
+
+
+app.get('/transaction/:transactionId', function(req,res){
+    console.log("transaction id is", req.params.transactionId);
+    const transactionId = req.params.transactionId;
+    const transactionData = bitcoin.getTransaction(transactionId);
+
+
+
+    res.json({
+        transaction: transactionData.transaction,
+        block: transactionData.block
+    });
+});
+
+app.get('/address/:address', function (req,res){
+
+});
 
 
 app.listen(port, function(){

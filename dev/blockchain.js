@@ -133,4 +133,38 @@ console.log(
 
     return validChain;
 }
+
+Blockchain.prototype.getBlock = function(blockHash){
+
+    let correctBlock = null;
+    this.chain.forEach(block =>{
+        if (block.hash === blockHash) correctBlock = block;
+    });
+    return correctBlock;
+};
+
+
+Blockchain.prototype.getTransaction = function(transactionId){
+console.log("transaction id incoming on api is",transactionId )
+let correctTransaction = null;
+let correctBlock = null;
+
+    this.chain.forEach(block => {
+
+    
+        block.transactions.forEach(transaction => {
+            if( transaction.transactionId === transactionId){
+                correctTransaction = transaction;
+                correctBlock = block;
+            };
+        });
+    });
+
+    return {
+        trasaction: correctTransaction,
+        block: correctBlock
+    };
+}
+
+
 module.exports = Blockchain;
