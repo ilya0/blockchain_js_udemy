@@ -144,27 +144,24 @@ Blockchain.prototype.getBlock = function(blockHash){
 };
 
 
-Blockchain.prototype.getTransaction = function(transactionId){
-console.log("transaction id incoming on api is",transactionId )
-let correctTransaction = null;
-let correctBlock = null;
+Blockchain.prototype.getTransaction = function(transactionId) {
+	let correctTransaction = null;
+	let correctBlock = null;
 
-    this.chain.forEach(block => {
+	this.chain.forEach(block => {
+		block.transactions.forEach(transaction => {
+			if (transaction.transactionId === transactionId) {
+				correctTransaction = transaction;
+				correctBlock = block;
+			};
+		});
+	});
 
-    
-        block.transactions.forEach(transaction => {
-            if( transaction.transactionId === transactionId){
-                correctTransaction = transaction;
-                correctBlock = block;
-            };
-        });
-    });
-
-    return {
-        trasaction: correctTransaction,
-        block: correctBlock
-    };
-}
+	return {
+		transaction: correctTransaction,
+		block: correctBlock
+	};
+};
 
 
 Blockchain.prototype.getAddressData = function(address){
